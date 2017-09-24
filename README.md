@@ -7,6 +7,6 @@
     NODE_ENV=production npm run build
     npm start
 
-then visit https://ip:9000/?autoconnect=true&nick=autoconnect&username=autoconnect&join=%23channelA%2c%23channelB
+then visit http://ip:9000/?autoconnect=true&nick=autoconnect&username=autoconnect&join=%23channelA%2c%23channelB
 
-All of the Connect form fields can be passed via url parameters to autoconnect.
+All of the Connect form fields can be passed via url parameters to autoconnect: name, host, port, password, tls, nick, username, realname, and join.
