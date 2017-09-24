@@ -5,14 +5,21 @@ const socket = require("../socket");
 const render = require("../render");
 const sidebar = $("#sidebar");
 const storage = require("../localStorage");
+const URI = require("urijs");
 
 socket.on("init", function(data) {
 	$("#loading-page-message").text("Rendering…");
 
 	if (data.networks.length === 0) {
-		$("#footer").find(".connect").trigger("click", {
-			pushState: false,
-		});
+
+		// Autoconnect
+		var params = URI(document.location.search);
+		params = params.search(true);
+		if (!(params.hasOwnProperty('autoconnect') && params['autoconnect'] === 'true')) {
+			$("#footer").find(".connect").trigger("click", {
+				pushState: false,
+			});
+		}
 	} else {
 		render.renderNetworks(data);
 	}
@@ -36,9 +43,15 @@ socket.on("init", function(data) {
 			.eq(0)
 			.trigger("click");
 		if (first.length === 0) {
-			$("#footer").find(".connect").trigger("click", {
-				pushState: false,
-			});
+
+			// Autoconnect
+			var params = URI(document.location.search);
+			params = params.search(true);
+			if (!(params.hasOwnProperty('autoconnect') && params['autoconnect'] === 'true')) {
+				$("#footer").find(".connect").trigger("click", {
+					pushState: false,
+				});
+			}
 		}
 	}
 });

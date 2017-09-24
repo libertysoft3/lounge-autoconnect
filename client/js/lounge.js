@@ -985,8 +985,39 @@ $(function() {
 	}
 	setTimeout(updateDateMarkers, msUntilNextDay());
 
+// An alternative to clicking the Connect button programatically, avoid showing it altogether
+ // E.g. specifying join for multiple channels: &join=%23channelOne%2c%23channelTwo
+ function autoConnect() {
+ 	// Get default connection config
+ 	// TODO - get config here directly, dont serialize a form
+ 	var whitelist = ['name', 'host', 'port', 'password', 'tls', 'nick', 'username', 'realname', 'join'];
+ 	var connectParams = {};
+ 	$.each($('#connect form').serializeArray(), function(i, obj) {
+ 		if (obj.value !== '' && whitelist.indexOf(obj.name) !== -1) {
+ 			connectParams[obj.name] = obj.value;
+ 		}
+ 	});
+
+ 	// Override default config with any url params
+ 	var params = URI(document.location.search);
+ 	params = params.search(true);
+ 	if (params.hasOwnProperty('autoconnect') && params['autoconnect'] === 'true') {
+ 		for (var key in params) {
+ 			if (params.hasOwnProperty(key) && whitelist.indexOf(key) !== -1) {
+ 				var value = params[key];
+ 				key = key.replace(/\W/g, ""); // \W searches for non-word characters
+ 				connectParams[key] = value;
+ 			}
+ 		}
+ 		socket.emit("conn", connectParams);
+ 	}
+ }
+
 	// Only start opening socket.io connection after all events have been registered
 	socket.open();
+
+	// Auto connect
+	autoConnect();
 
 	window.addEventListener("popstate", (e) => {
 		const {state} = e;

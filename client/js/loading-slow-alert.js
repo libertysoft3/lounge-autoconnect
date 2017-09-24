@@ -12,10 +12,9 @@ setTimeout(function() {
 	var element = document.getElementById("loading-slow");
 
 	if (element) {
+		document.getElementById("loading-slow-reload").addEventListener("click", function() {
+			location.reload();
+		});
 		element.style.display = "block";
 	}
 }, 5000);
-
-document.getElementById("loading-slow-reload").addEventListener("click", function() {
-	location.reload();
-});

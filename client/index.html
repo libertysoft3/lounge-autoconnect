@@ -10,6 +10,7 @@
 	<link rel="stylesheet" href="css/bootstrap.css">
 	<link rel="stylesheet" href="css/style.css">
 	<link id="theme" rel="stylesheet" href="{{ theme }}">
+	<link rel="stylesheet" href="css/theme-override-custom.css">
 	<style id="user-specified-css"></style>
 
 	<title>The Lounge</title>
@@ -44,7 +45,7 @@
 		</footer>
 		<div id="main">
 			<div id="windows">
-				<div id="loading" class="window active">
+				<div id="loading" class="window">
 					<div class="container">
 						<div class="row">
 							<div class="col-xs-12">
@@ -61,7 +62,7 @@
 						</div>
 					</div>
 				</div>
-				<div id="chat-container" class="window">
+				<div id="chat-container" class="window active">
 					<div id="chat"></div>
 					<button id="connection-error" class="btn btn-reconnect">Client connection lost &mdash; Click here to reconnect</button>
 					<form id="form" method="post" action="">

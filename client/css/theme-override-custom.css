@@ -1,0 +1,25 @@
+/* Autoconnect: less loading flash */
+ #loading-page-message {
+   display: none;
+ }
+ .signed-out #main {
+   left: 220px;
+ }
+ #sidebar .empty {
+   display: none;
+ }
+ .signed-out #footer .connect {
+   display: inline-block;
+ }
+ #viewport {
+   transition: none;
+   -webkit-transform none;
+   -webkit-transform: none;
+   transform: none;
+ }
+ #image-viewer {
+   transition: none;
+ }
+ #footer .icon {
+   transition: none;
+ }
