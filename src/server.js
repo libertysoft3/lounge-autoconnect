@@ -392,6 +392,14 @@ function auth(data) {
 		}
 	} else {
 		client = manager.findClient(data.user, data.token);
+
+		// Autologin
+		if (data.isAutologin && !client) {
+			manager.addUser(data.user, Helper.password.hash(data.password), false, true); // last param writes autoload indicator to client config for loadUser() and Client().
+			manager.loadUser(data.user); // loads user.json and constructs the Client, generating client.config.token for new users
+			client = manager.findClient(data.user);
+		}
+
 		var signedIn = data.token && client && data.token === client.config.token;
 		var token;
 

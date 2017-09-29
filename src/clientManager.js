@@ -90,7 +90,7 @@ ClientManager.prototype.getUsers = function() {
 	return users;
 };
 
-ClientManager.prototype.addUser = function(name, password, enableLog) {
+ClientManager.prototype.addUser = function(name, password, enableLog, isAutologin) {
 	var users = this.getUsers();
 	if (users.indexOf(name) !== -1) {
 		return false;
@@ -105,7 +105,8 @@ ClientManager.prototype.addUser = function(name, password, enableLog) {
 			password: password || "",
 			log: enableLog,
 			awayMessage: "",
-			networks: []
+			networks: [],
+			isAutologin: isAutologin || false
 		};
 		fs.writeFileSync(
 			Helper.getUserConfigPath(name),
