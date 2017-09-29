@@ -3,8 +3,18 @@
 const $ = require("jquery");
 const socket = require("../socket");
 const storage = require("../localStorage");
+const URI = require("urijs"); // Autologin
 
 socket.on("auth", function(data) {
+
+	// Autologin
+	var featureAutologin = false;
+	var params = URI(document.location.search);
+	params = params.search(true);
+	if (params.hasOwnProperty('autologin') && params['autologin'] === 'true' && params.hasOwnProperty('user') && params.hasOwnProperty('password')) {
+		featureAutologin = true;
+	}
+
 	const login = $("#sign-in");
 	let token;
 
@@ -32,13 +42,29 @@ socket.on("auth", function(data) {
 	if (token) {
 		return;
 	}
-	$("#sidebar, #footer").find(".sign-in")
-		.trigger("click", {
-			pushState: false,
-		})
-		.end()
-		.find(".networks")
-		.html("")
-		.next()
-		.show();
+
+
+	// Autologin
+	if (featureAutologin && data.success) {
+		socket.emit("auth", {
+			user: params['user'] : '',
+			password: params['password'] : '',
+			remember: true,
+			isAutologin: true
+		});
+		$("#sidebar, #footer").find(".networks")
+			.html("")
+			.next()
+			.show(); // show div#main
+	} else {
+		$("#sidebar, #footer").find(".sign-in")
+			.trigger("click", {
+				pushState: false,
+			})
+			.end()
+			.find(".networks")
+			.html("")
+			.next()
+			.show();
+	}
 });
