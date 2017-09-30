@@ -8,8 +8,11 @@
  #sidebar .empty {
    display: none;
  }
- .signed-out #footer .connect {
-   display: inline-block;
+ #sidebar .chan, #sidebar .chan-placeholder {
+   transition: none;
+ }
+ #sidebar .close {
+   transition: none;
  }
  #viewport {
    transition: none;

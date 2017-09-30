@@ -985,11 +985,9 @@ $(function() {
 	}
 	setTimeout(updateDateMarkers, msUntilNextDay());
 
-// An alternative to clicking the Connect button programatically, avoid showing it altogether
+ // Called for public mode only, private mode does it in init.js
  // E.g. specifying join for multiple channels: &join=%23channelOne%2c%23channelTwo
- function autoConnect() {
- 	// Get default connection config
- 	// TODO - get config here directly, dont serialize a form
+ function autoConnect(urlParams) {
  	var whitelist = ['name', 'host', 'port', 'password', 'tls', 'nick', 'username', 'realname', 'join'];
  	var connectParams = {};
  	$.each($('#connect form').serializeArray(), function(i, obj) {
@@ -999,26 +997,28 @@ $(function() {
  	});
 
  	// Override default config with any url params
- 	var params = URI(document.location.search);
- 	params = params.search(true);
- 	if (params.hasOwnProperty('autoconnect') && params['autoconnect'] === 'true') {
- 		for (var key in params) {
- 			if (params.hasOwnProperty(key) && whitelist.indexOf(key) !== -1) {
- 				var value = params[key];
- 				key = key.replace(/\W/g, ""); // \W searches for non-word characters
- 				connectParams[key] = value;
- 			}
- 		}
- 		socket.emit("conn", connectParams);
- 	}
+	for (var key in whitelist) {
+		if (urlParams.hasOwnProperty(key) && urlParams.indexOf(key) !== -1) {
+			var value = urlParams[key];
+			key = key.replace(/\W/g, ""); // \W searches for non-word characters
+			connectParams[key] = value;
+		}
+	}
+	socket.emit("conn", connectParams);
  }
 
 	// Only start opening socket.io connection after all events have been registered
 	socket.open();
 
-	// Auto connect
-	autoConnect();
-
+	// Auto connect - public mode only, private mode must auth first
+	if ($("body").hasClass("public")) {
+		var acParams = URI(document.location.search);
+	 	acParams = acParams.search(true);
+		if (acParams.hasOwnProperty('autoconnect') && acParams['autoconnect'] === 'true') {
+			autoConnect(acParams);
+		}
+	}
+	
 	window.addEventListener("popstate", (e) => {
 		const {state} = e;
 		if (!state) {

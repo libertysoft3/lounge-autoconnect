@@ -301,10 +301,18 @@ function init(socket, client) {
 		});
 
 		socket.join(client.id);
+
+		// Autologin triggering autoconnect
+		var autoLoginSuccess = false;
+		if (!Helper.config.public && client.config.isAutologin) {
+			autoLoginSuccess = true;
+		}
+
 		socket.emit("init", {
 			active: client.lastActiveChannel,
 			networks: client.networks,
-			token: client.config.token || null
+			token: client.config.token || null,
+			autoLoginSuccess: autoLoginSuccess
 		});
 	}
 }
@@ -394,9 +402,9 @@ function auth(data) {
 		client = manager.findClient(data.user, data.token);
 
 		// Autologin
-		if (data.isAutologin && !client) {
-			manager.addUser(data.user, Helper.password.hash(data.password), false, true); // last param writes autoload indicator to client config for loadUser() and Client().
-			manager.loadUser(data.user); // loads user.json and constructs the Client, generating client.config.token for new users
+		if (data.isAutologin && !client) { // Note: this is client sent isAutologin from client/js/socket-events/auth.js
+			manager.addUser(data.user, Helper.password.hash(data.password), false, true); // write to disk, last param writes autoload indicator to client config for loadUser() and Client().
+			manager.loadUser(data.user); // loads user.json and constructs the Client, generating client.config.token for new users, write to disk again
 			client = manager.findClient(data.user);
 		}
 
@@ -407,7 +415,7 @@ function auth(data) {
 			token = client.config.token;
 		}
 
-		var authCallback = function(success) {
+		var authCallback = function(success, isAutologin) {
 			if (success) {
 				if (!client) {
 					// LDAP just created a user
@@ -425,7 +433,7 @@ function auth(data) {
 		};
 
 		if (signedIn) {
-			authCallback(true);
+			authCallback(true, data.isAutologin);
 		} else {
 			authFunction(client, data.user, data.password, authCallback);
 		}

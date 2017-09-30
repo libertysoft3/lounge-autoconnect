@@ -1,4 +1,4 @@
-[The Lounge](https://github.com/thelounge/lounge) web IRC client, adding an autoconnect feature. this cloned codebase is lounge [v2.4.0](https://github.com/thelounge/lounge/releases/tag/v2.4.0).
+[The Lounge](https://github.com/thelounge/lounge) web IRC client, adding an auto connect feature which includes an optional auto login feature for private mode. This cloned codebase is at lounge version [v2.4.0](https://github.com/thelounge/lounge/releases/tag/v2.4.0) released 7/30/17.
 
     git clone https://github.com/libertysoft3/lounge-autoconnect.git
     cd lounge-autoconnect
@@ -7,6 +7,11 @@
     NODE_ENV=production npm run build
     npm start
 
-then visit http://ip:9000/?autoconnect=true&nick=autoconnect&username=autoconnect&join=%23channelA%2c%23channelB
+Auto connect in public and private modes: `http://localhost:9000/?autoconnect=true&nick=autoconnect&username=autoconnect&join=%23channelA%2c%23channelB&tls=true`
 
-All of the Connect form fields can be passed via url parameters to autoconnect: name, host, port, password, tls, nick, username, realname, and join.
+Auto login and auto connect in private mode: `http://localhost:9000/?autologin=true&user=client-username&al-password=client-password&autoconnect=true&nick=autoconnect&username=autoconnect&join=%23channelA%2c%23channelB&tls=true`
+
+All of the "Connect" form fields can be passed via url parameters to autoconnect: name, host, port, password, tls, nick, username, realname, and join.
+
+TODO:
+* password collision, rename the autologin one

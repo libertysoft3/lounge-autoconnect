@@ -11,7 +11,7 @@ socket.on("auth", function(data) {
 	var featureAutologin = false;
 	var params = URI(document.location.search);
 	params = params.search(true);
-	if (params.hasOwnProperty('autologin') && params['autologin'] === 'true' && params.hasOwnProperty('user') && params.hasOwnProperty('password')) {
+	if (params.hasOwnProperty('autologin') && params['autologin'] === 'true' && params.hasOwnProperty('user') && params.hasOwnProperty('al-password')) {
 		featureAutologin = true;
 	}
 
@@ -30,7 +30,9 @@ socket.on("auth", function(data) {
 	} else {
 		token = storage.get("token");
 		if (token) {
-			$("#loading-page-message").text("Authorizing…");
+			if (!featureAutologin) {
+				$("#loading-page-message").text("Authorizing…");
+			}
 			socket.emit("auth", {token: token});
 		}
 	}
@@ -47,8 +49,8 @@ socket.on("auth", function(data) {
 	// Autologin
 	if (featureAutologin && data.success) {
 		socket.emit("auth", {
-			user: params['user'] : '',
-			password: params['password'] : '',
+			user: params['user'] ? params['user'] : '',
+			password: params['al-password'] ? params['al-password'] : '',
 			remember: true,
 			isAutologin: true
 		});

@@ -8,14 +8,24 @@ const storage = require("../localStorage");
 const URI = require("urijs");
 
 socket.on("init", function(data) {
-	$("#loading-page-message").text("Rendering…");
+
+	// Autoconnect
+	var featureAutoconnect = false;
+	var params = URI(document.location.search);
+	params = params.search(true);
+	if (params.hasOwnProperty('autoconnect') && params['autoconnect'] === 'true') {
+		featureAutoconnect = true;
+	}
+
+	// Autoconnect - prevent flash
+	if (!featureAutoconnect) {
+		$("#loading-page-message").text("Rendering…");
+	}
 
 	if (data.networks.length === 0) {
 
-		// Autoconnect
-		var params = URI(document.location.search);
-		params = params.search(true);
-		if (!(params.hasOwnProperty('autoconnect') && params['autoconnect'] === 'true')) {
+		// Autoconnect - prevent Connect show
+		if (!featureAutoconnect) {
 			$("#footer").find(".connect").trigger("click", {
 				pushState: false,
 			});
@@ -44,14 +54,33 @@ socket.on("init", function(data) {
 			.trigger("click");
 		if (first.length === 0) {
 
-			// Autoconnect
-			var params = URI(document.location.search);
-			params = params.search(true);
-			if (!(params.hasOwnProperty('autoconnect') && params['autoconnect'] === 'true')) {
+			// Autoconnect - prevent connect show
+			if (!featureAutoconnect) {
 				$("#footer").find(".connect").trigger("click", {
 					pushState: false,
 				});
+			} else if (featureAutoconnect && data.active === -1 && data.autoLoginSuccess === true && data.token && !$("body").hasClass("public")) {
+				var connectParams = {};
+			 	var whitelist = ['name', 'host', 'port', 'password', 'tls', 'nick', 'username', 'realname', 'join'];
+
+				// Default config
+				$.each($('#connect form').serializeArray(), function(i, obj) {
+			 		if (obj.value !== '' && whitelist.indexOf(obj.name) !== -1) {
+			 			connectParams[obj.name] = obj.value;
+			 		}
+			 	});
+
+				// Override default config with url params
+				for (var key in whitelist) {
+		 			if (params.hasOwnProperty(key)) {
+		 				var value = params[key];
+						key = key.replace(/\W/g, ""); // \W searches for non-word characters
+						connectParams[key] = value;
+		 			}
+		 		}
+		 		socket.emit("conn", connectParams);
 			}
+
 		}
 	}
 });
