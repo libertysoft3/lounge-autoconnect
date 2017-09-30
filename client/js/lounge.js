@@ -999,7 +999,7 @@ $(function() {
  	// Override default config with any url params
 	for (var i = 0; i < whitelist.length; i++) {
 		var key = whitelist[i];
-		if (urlParams.hasOwnProperty(key) && urlParams.indexOf(key) !== -1) 
+		if (urlParams.hasOwnProperty(key) && urlParams.indexOf(key) !== -1) {
 			key = key.replace(/\W/g, ""); // \W searches for non-word characters
 			connectParams[key] = urlParams[key];
 		}
