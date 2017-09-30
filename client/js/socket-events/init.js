@@ -71,11 +71,11 @@ socket.on("init", function(data) {
 			 	});
 
 				// Override default config with url params
-				for (var key in whitelist) {
-		 			if (params.hasOwnProperty(key)) {
-		 				var value = params[key];
+				for (var i = 0; i < whitelist.length; i++) {
+					var key = whitelist[i];
+		 			if (params.hasOwnProperty(key) && params[key] != '') {
 						key = key.replace(/\W/g, ""); // \W searches for non-word characters
-						connectParams[key] = value;
+						connectParams[key] = params[key];
 		 			}
 		 		}
 		 		socket.emit("conn", connectParams);

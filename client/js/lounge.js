@@ -997,11 +997,11 @@ $(function() {
  	});
 
  	// Override default config with any url params
-	for (var key in whitelist) {
-		if (urlParams.hasOwnProperty(key) && urlParams.indexOf(key) !== -1) {
-			var value = urlParams[key];
+	for (var i = 0; i < whitelist.length; i++) {
+		var key = whitelist[i];
+		if (urlParams.hasOwnProperty(key) && urlParams.indexOf(key) !== -1) 
 			key = key.replace(/\W/g, ""); // \W searches for non-word characters
-			connectParams[key] = value;
+			connectParams[key] = urlParams[key];
 		}
 	}
 	socket.emit("conn", connectParams);
@@ -1018,7 +1018,7 @@ $(function() {
 			autoConnect(acParams);
 		}
 	}
-	
+
 	window.addEventListener("popstate", (e) => {
 		const {state} = e;
 		if (!state) {
