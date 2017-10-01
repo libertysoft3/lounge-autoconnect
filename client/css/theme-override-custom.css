@@ -11,21 +11,24 @@
 .loading #footer button.icon {
   display: none;
 }
- #sidebar .chan, #sidebar .chan-placeholder {
-   transition: none;
- }
- #sidebar .close {
-   transition: none;
- }
- #viewport {
-   transition: none;
-   -webkit-transform none;
-   -webkit-transform: none;
-   transform: none;
- }
- #image-viewer {
-   transition: none;
- }
- #footer .icon {
-   transition: none;
- }
+#windows .window:before {
+  display: none;
+}
+#sidebar .chan, #sidebar .chan-placeholder {
+ transition: none;
+}
+#sidebar .close {
+ transition: none;
+}
+#viewport {
+ transition: none;
+ -webkit-transform none;
+ -webkit-transform: none;
+ transform: none;
+}
+#image-viewer {
+ transition: none;
+}
+#footer .icon {
+ transition: none;
+}
