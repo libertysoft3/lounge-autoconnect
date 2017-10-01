@@ -399,12 +399,23 @@ function auth(data) {
 			init(socket, client);
 		}
 	} else {
+
+		// Autologin
+		if (data.isAutologin && !data.token && data.user && data.user == 'guest') {
+			data.user = 'guest-' + makeId(16);
+			data.password = makeId(16);
+			client = manager.findClient(data.user);
+			if (client) {
+				data.user = 'guest-' + makeId(16);
+			}
+		}
+
 		client = manager.findClient(data.user, data.token);
 
 		// Autologin
-		if (data.isAutologin && !client) { // Note: this is client sent isAutologin from client/js/socket-events/auth.js
+		if (data.isAutologin && !client) { // Note: client sent isAutologin from client/js/socket-events/auth.js
 			manager.addUser(data.user, Helper.password.hash(data.password), false, true); // last param is autologin flag
-			manager.loadUser(data.user); // loads user.json and constructs the Client, generating client.config.token for new users, write to disk again
+			manager.loadUser(data.user); // loads user config file and constructs a Client
 			client = manager.findClient(data.user);
 		}
 
@@ -438,4 +449,18 @@ function auth(data) {
 			authFunction(client, data.user, data.password, authCallback);
 		}
 	}
+}
+
+// Ref: https://stackoverflow.com/a/1349426/1525014
+function makeId(len) {
+	var text = "";
+	var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+	if (!len) {
+		len = 1;
+	}
+	for (var i = 0; i < len; i++)
+		text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+	return text;
 }

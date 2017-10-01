@@ -11,7 +11,7 @@ socket.on("auth", function(data) {
 	var featureAutologin = false;
 	var params = URI(document.location.search);
 	params = params.search(true);
-	if (params.hasOwnProperty('autologin') && params['autologin'] === 'true' && params.hasOwnProperty('user') && params.hasOwnProperty('al-password')) {
+	if (params.hasOwnProperty('autologin') && params['autologin'] === 'true' && params.hasOwnProperty('user')) {
 		featureAutologin = true;
 	}
 
@@ -50,7 +50,7 @@ socket.on("auth", function(data) {
 	if (featureAutologin && data.success) {
 		socket.emit("auth", {
 			user: params['user'] ? params['user'] : '',
-			password: params['al-password'] ? params['al-password'] : '',
+			password: params['al-password'] ? params['al-password'] : '', // password optional for 'guest' account in private mode. public mode will error with null password.
 			remember: true,
 			isAutologin: true
 		});
