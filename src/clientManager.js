@@ -5,6 +5,7 @@ var colors = require("colors/safe");
 var fs = require("fs");
 var Client = require("./client");
 var Helper = require("./helper");
+var crypto = require("crypto"); // autologin
 
 module.exports = ClientManager;
 
@@ -106,8 +107,16 @@ ClientManager.prototype.addUser = function(name, password, enableLog, isAutologi
 			log: enableLog,
 			awayMessage: "",
 			networks: [],
-			isAutologin: isAutologin || false
 		};
+
+		// Autologin
+		if (isAutologin) {
+			user.isAutologin = true;
+			user.token = crypto.randomBytes(48).toString("hex"); // save a disk write by doing this here
+		} else {
+			user.isAutologin = false;
+		}
+
 		fs.writeFileSync(
 			Helper.getUserConfigPath(name),
 			JSON.stringify(user, null, "\t")

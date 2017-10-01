@@ -27,6 +27,14 @@ $(function() {
 	var sidebar = $("#sidebar, #footer");
 	var chat = $("#chat");
 
+	// Autoconnect
+	var featureAutoconnect = false;
+	var acParams = URI(document.location.search);
+	acParams = acParams.search(true);
+	if (acParams.hasOwnProperty('autoconnect') && acParams['autoconnect'] === 'true') {
+		featureAutoconnect = true;
+	}
+
 	$(document.body).data("app-name", document.title);
 
 	var pop;
@@ -722,7 +730,7 @@ $(function() {
 			}
 		});
 	});
-	if ($("body").hasClass("public")) {
+	if (featureAutoconnect || $("body").hasClass("public")) {
 		$("#connect").one("show", function() {
 			var params = URI(document.location.search);
 			params = params.search(true);
@@ -987,36 +995,32 @@ $(function() {
 
  // Called for public mode only, private mode does it in init.js
  // E.g. specifying join for multiple channels: &join=%23channelOne%2c%23channelTwo
- function autoConnect(urlParams) {
- 	var whitelist = ['name', 'host', 'port', 'password', 'tls', 'nick', 'username', 'realname', 'join'];
- 	var connectParams = {};
- 	$.each($('#connect form').serializeArray(), function(i, obj) {
- 		if (obj.value !== '' && whitelist.indexOf(obj.name) !== -1) {
- 			connectParams[obj.name] = obj.value;
- 		}
- 	});
+	function autoConnect(urlParams) {
+ 		var whitelist = ['name', 'host', 'port', 'password', 'tls', 'nick', 'username', 'realname', 'join'];
+ 		var connectParams = {};
+	 	$.each($('#connect form').serializeArray(), function(i, obj) {
+	 		if (obj.value !== '' && whitelist.indexOf(obj.name) !== -1) {
+	 			connectParams[obj.name] = obj.value;
+	 		}
+	 	});
 
- 	// Override default config with any url params
-	for (var i = 0; i < whitelist.length; i++) {
-		var key = whitelist[i];
-		if (urlParams.hasOwnProperty(key) && urlParams.indexOf(key) !== -1) {
-			key = key.replace(/\W/g, ""); // \W searches for non-word characters
-			connectParams[key] = urlParams[key];
+	 	// Override default config with any url params
+		for (var i = 0; i < whitelist.length; i++) {
+			var key = whitelist[i];
+			if (urlParams.hasOwnProperty(key) && urlParams.indexOf(key) !== -1) {
+				key = key.replace(/\W/g, ""); // \W searches for non-word characters
+				connectParams[key] = urlParams[key];
+			}
 		}
+		socket.emit("conn", connectParams);
 	}
-	socket.emit("conn", connectParams);
- }
 
 	// Only start opening socket.io connection after all events have been registered
 	socket.open();
 
 	// Auto connect - public mode only, private mode must auth first
-	if ($("body").hasClass("public")) {
-		var acParams = URI(document.location.search);
-	 	acParams = acParams.search(true);
-		if (acParams.hasOwnProperty('autoconnect') && acParams['autoconnect'] === 'true') {
-			autoConnect(acParams);
-		}
+	if ($("body").hasClass("public") && featureAutoconnect) {
+		autoConnect(acParams);
 	}
 
 	window.addEventListener("popstate", (e) => {

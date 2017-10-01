@@ -43,6 +43,7 @@ socket.on("init", function(data) {
 	$("body").removeClass("signed-out");
 	$("#loading").remove();
 	$("#sign-in").remove();
+	$("body").removeClass("loading");
 
 	const id = data.active;
 	const target = sidebar.find("[data-id='" + id + "']").trigger("click", {

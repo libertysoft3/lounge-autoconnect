@@ -403,7 +403,7 @@ function auth(data) {
 
 		// Autologin
 		if (data.isAutologin && !client) { // Note: this is client sent isAutologin from client/js/socket-events/auth.js
-			manager.addUser(data.user, Helper.password.hash(data.password), false, true); // write to disk, last param writes autoload indicator to client config for loadUser() and Client().
+			manager.addUser(data.user, Helper.password.hash(data.password), false, true); // last param is autologin flag
 			manager.loadUser(data.user); // loads user.json and constructs the Client, generating client.config.token for new users, write to disk again
 			client = manager.findClient(data.user);
 		}
@@ -415,7 +415,7 @@ function auth(data) {
 			token = client.config.token;
 		}
 
-		var authCallback = function(success, isAutologin) {
+		var authCallback = function(success) {
 			if (success) {
 				if (!client) {
 					// LDAP just created a user
@@ -433,7 +433,7 @@ function auth(data) {
 		};
 
 		if (signedIn) {
-			authCallback(true, data.isAutologin);
+			authCallback(true);
 		} else {
 			authFunction(client, data.user, data.password, authCallback);
 		}

@@ -82,15 +82,9 @@ function Client(manager, name, config) {
 	var client = this;
 
 	if (client.name && !client.config.token) {
-		// Autologin
-		if (config.isAutologin) { // Set with flag for addUser()
-			var token = client.updateTokenSync();
+		client.updateToken(function(token) {
 			client.manager.updateUser(client.name, {token: token});
-		} else {
-			client.updateToken(function(token) {
-				client.manager.updateUser(client.name, {token: token}); // write to disk if config changed
-			});
-		}
+		});
 	}
 
 	var delay = 0;
@@ -302,13 +296,6 @@ Client.prototype.updateToken = function(callback) {
 
 		callback(client.config.token = buf.toString("hex"));
 	});
-};
-
-// Autologin
-Client.prototype.updateTokenSync = function() {
-	var client = this;
-	client.config.token = crypto.randomBytes(48).toString("hex");
-	return client.config.token;
 };
 
 Client.prototype.setPassword = function(hash, callback) {

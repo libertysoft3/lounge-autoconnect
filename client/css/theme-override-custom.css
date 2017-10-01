@@ -5,9 +5,12 @@
  .signed-out #main {
    left: 220px;
  }
- #sidebar .empty {
+.loading #sidebar .empty {
    display: none;
  }
+.loading #footer button.icon {
+  display: none;
+}
  #sidebar .chan, #sidebar .chan-placeholder {
    transition: none;
  }
