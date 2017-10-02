@@ -32,3 +32,8 @@
 #footer .icon {
  transition: none;
 }
+
+/* WARNING: assuming small display size where left menu will be hidden */
+.loading #main {
+  left: 5px;
+}

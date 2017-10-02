@@ -6,8 +6,10 @@ Fork of [The Lounge](https://github.com/thelounge/lounge) web IRC client, adding
     git checkout v2.4.0-autoconnect
     npm install
     NODE_ENV=production npm run build
-    # optional, set default IRC server, etc:
-    nano ~/.lounge/config.js
+
+    # Optional, creates config file, change default IRC server, etc:
+    node index config
+
     npm start
 
 * Public mode: http://localhost:9000/?autoconnect=true&nick=lounger&username=lounger&join=%23thelounge-spam&tls=true
@@ -15,3 +17,5 @@ Fork of [The Lounge](https://github.com/thelounge/lounge) web IRC client, adding
 * Private mode guest accounts: http://localhost:9000/?autologin=true&user=guest&autoconnect=true&nick=guest&username=guest&realname=guest&tls=true
 
 All of the "Connect" form fields can be passed via url parameters: name, host, port, password, tls, nick, username, realname, and join. Private mode autologin introduces user and al-password.
+
+More on [public vs. private mode](https://thelounge.github.io/docs/server/users.html)
