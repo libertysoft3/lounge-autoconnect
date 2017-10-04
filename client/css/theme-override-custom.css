@@ -33,7 +33,9 @@
  transition: none;
 }
 
-/* WARNING: assuming small display size where left menu will be hidden */
+/* Assume small display size, hide left menu will be hidden */
+/*
 .loading #main {
   left: 5px;
 }
+*/

@@ -11,10 +11,14 @@ socket.on("init", function(data) {
 
 	// Autoconnect
 	var featureAutoconnect = false;
+	var featureAutoconnectWithJoin = false;
 	var params = URI(document.location.search);
 	params = params.search(true);
 	if (params.hasOwnProperty('autoconnect') && params['autoconnect'] === 'true') {
 		featureAutoconnect = true;
+	}
+	if (params.hasOwnProperty('autoconnect') && params['autoconnect'] === 'true' && params.hasOwnProperty('join') && params['join'] != '') {
+		featureAutoconnectWithJoin = true;
 	}
 
 	// Autoconnect - prevent flash
@@ -45,8 +49,35 @@ socket.on("init", function(data) {
 	$("#sign-in").remove();
 	$("body").removeClass("loading");
 
-	const id = data.active;
-	const target = sidebar.find("[data-id='" + id + "']").trigger("click", {
+	// Autoconnect - logged in channel switching
+	var id = data.active;
+	const target = sidebar.find("[data-id='" + id + "']");
+	if (featureAutoconnectWithJoin && id && id > 0 && params['join'] != $(target).data("title")) {
+
+		// click an already active channel
+		var desiredChannel = $(target).parent(".network").find(".channel").filter(function() { return $(this).data("title") == params['join']; }).first();
+		if (desiredChannel.length) {
+			id = $(desiredChannel).data("id");
+		} else {
+
+			// join desired channel
+			socket.emit("input", {
+				target: id, // our current channel id
+				text: "/join " + params['join']
+			});
+
+			// quit other channels
+			$(target).parent(".network").find(".channel button.close").each(function () {
+				if ($(this).data('id') != id) {
+					$(this).trigger("click");
+				}
+			});
+
+			return;
+		}
+	}
+	
+	target.trigger("click", {
 		replaceHistory: true
 	});
 	if (target.length === 0) {
@@ -79,7 +110,7 @@ socket.on("init", function(data) {
 						connectParams[key] = params[key];
 		 			}
 		 		}
-		 		socket.emit("conn", connectParams);
+				socket.emit("conn", connectParams);
 			}
 
 		}
