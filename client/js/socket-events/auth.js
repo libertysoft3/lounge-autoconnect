@@ -29,10 +29,21 @@ socket.on("auth", function(data) {
 		});
 	} else {
 		token = storage.get("token");
-		if (token) {
-			if (!featureAutologin) {
-				$("#loading-page-message").text("Authorizing…");
+
+		// Autologin - detect username changes, force re-auth
+		if (featureAutologin && token) {
+			var userStorage = storage.get("user");
+			var userUrl = params.hasOwnProperty('user') && params['user'].length > 0 ? params['user'] : '';
+			if (userStorage !== userUrl) {
+				// console.log('dbg: socket auth autologin forcing re-auth');
+				token = "";
+				storage.remove("token");
+			} else {
+				socket.emit("auth", {token: token});
 			}
+		} else if (token) {
+			// core behavior
+			$("#loading-page-message").text("Authorizing…");
 			socket.emit("auth", {token: token});
 		}
 	}
@@ -48,8 +59,10 @@ socket.on("auth", function(data) {
 
 	// Autologin
 	if (featureAutologin && data.success) {
+		var user = params['user'] ? params['user'] : '';
+		storage.set("user", user); // core does this on form submit
 		socket.emit("auth", {
-			user: params['user'] ? params['user'] : '',
+			user: user,
 			password: params['al-password'] ? params['al-password'] : '', // password optional for 'guest' account in private mode. public mode will error with null password.
 			remember: true,
 			isAutologin: true
