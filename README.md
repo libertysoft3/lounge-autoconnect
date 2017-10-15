@@ -11,15 +11,15 @@ Fork of [The Lounge](https://github.com/thelounge/lounge) web IRC client, adding
 
     npm start
 
-* Public mode: http://localhost:9000/?tls=true&autoconnect&nick=lounger&username=lounger&realname=lounger&join=%23thelounge-spam
-* Private mode: http://localhost:9000/?tls=true&autologin&user=lounger&al-password=lounger&autoconnect&nick=lounger&username=lounger&realname=lounger&join=%23thelounge-spam
-* Private mode guest accounts: http://localhost:9000/?tls=true&autologin&user=guest&autoconnect&nick=lounger&username=lounger&realname=lounger&join=%23thelounge-spam
+* Public mode auto connect: `http://localhost:9000/?tls=true&autoconnect&nick=lounger&username=lounger&realname=lounger&join=%23thelounge-spam`
+* Private mode auto login and connect: `http://localhost:9000/?tls=true&autologin&user=lounger&al-password=lounger&autoconnect&nick=lounger&username=lounger&realname=lounger&join=%23thelounge-spam`
+* Private guest mode: `http://localhost:9000/?tls=true&autologin&user=guest&autoconnect&nick=lounger&username=lounger&realname=lounger&join=%23thelounge-spam`
 
 
 Url params
 ----------------
 * autologin: sign into or create a The Lounge private mode user account. Requires params user and al-password. (private mode only)
-	* al-password: yes, it's a cleartext password
+	* al-password: warning this is a cleartext url parameter
 * autoconnect: automatically join the channels specified. Requires params nick, username, and realname (public or private modes)
 	* join: connect to one or more channels. (as per core, the last channel specified will have it's chat shown to the user). e.g. `&join=#channelA,#channelB`
 	* quit: quit any connected channels aside from the last channel specified in 'join'
