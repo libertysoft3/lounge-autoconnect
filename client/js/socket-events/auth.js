@@ -11,7 +11,7 @@ socket.on("auth", function(data) {
 	var featureAutologin = false;
 	var params = URI(document.location.search);
 	params = params.search(true);
-	if (params.hasOwnProperty('autologin') && params['autologin'] === 'true' && params.hasOwnProperty('user')) {
+	if (params.hasOwnProperty('autologin') && params.hasOwnProperty('user')) {
 		featureAutologin = true;
 	}
 

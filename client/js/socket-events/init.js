@@ -11,14 +11,10 @@ socket.on("init", function(data) {
 
 	// Autoconnect
 	var featureAutoconnect = false;
-	var featureAutoconnectWithJoin = false;
 	var params = URI(document.location.search);
 	params = params.search(true);
-	if (params.hasOwnProperty('autoconnect') && params['autoconnect'] === 'true') {
+	if (params.hasOwnProperty('autoconnect')) {
 		featureAutoconnect = true;
-	}
-	if (params.hasOwnProperty('autoconnect') && params['autoconnect'] === 'true' && params.hasOwnProperty('join') && params['join'] != '') {
-		featureAutoconnectWithJoin = true;
 	}
 
 	// Autoconnect - prevent flash
@@ -49,34 +45,75 @@ socket.on("init", function(data) {
 	$("#sign-in").remove();
 	$("body").removeClass("loading");
 
-	// Autoconnect - logged in channel switching
+	// Autoconnect - join handling - switch to already connected channel if join changed (last channel in join)
+	// NOTE: Single network compatible only. Sees Network for the last active channel only.
 	var id = data.active;
-	const target = sidebar.find("[data-id='" + id + "']");
-	if (featureAutoconnectWithJoin && id && id > 0 && params['join'] != $(target).data("title")) {
+	var target = sidebar.find("[data-id='" + id + "']");
+	// console.log('dbg: active id: ', id);
+	// console.log('dbg: active channel: ', $(target).data("title"));
 
-		// click an already active channel
-		var desiredChannel = $(target).parent(".network").find(".channel").filter(function() { return $(this).data("title") == params['join']; }).first();
-		if (desiredChannel.length) {
-			id = $(desiredChannel).data("id");
-		} else {
-
-			// join desired channel
-			socket.emit("input", {
-				target: id, // our current channel id
-				text: "/join " + params['join']
-			});
-
-			// quit other channels
-			$(target).parent(".network").find(".channel button.close").each(function () {
-				if ($(this).data('id') != id) {
-					$(this).trigger("click");
-				}
-			});
-
-			return;
+	var joinChannels = featureAutoconnect && params.hasOwnProperty('join') ? params['join'].split(',') : [];
+	var channels = [];
+	if (featureAutoconnect && id > 0) {
+		$(target).parent(".network").find(".channel").each(function(){
+			channels.push({id: $(this).data("id"), title: $(this).data("title"), target: $(this).data("target")});
+		});
+	}
+	
+	// Autoconnect - show a different (already joined) channel
+	if (featureAutoconnect && id > 0 && joinChannels.length > 0 && joinChannels[joinChannels.length-1] != $(target).data("title")) { // do nothing if desired channel already active, core will click it below
+		for (var i = channels.length - 1; i >= 0; i--) {
+			if (channels[i].title == joinChannels[joinChannels.length-1]) {
+				id = channels[i].id;
+				target = sidebar.find("[data-id='" + id + "']");
+				// console.log('dbg: new active channel: ', $(target).data("title"));
+			}
 		}
 	}
 	
+	// Autoconnect - join any new channels, will be shown once server responds
+	if (featureAutoconnect && id > 0 && joinChannels.length > 0) {
+		var toJoin = [];
+		for (var i = joinChannels.length - 1; i >= 0; i--) {
+			var areJoined = false;
+			for (var j = channels.length - 1; j >= 0; j--) {
+				if (joinChannels[i] == channels[j].title) {
+					areJoined = true;
+				}
+			}
+			if (!areJoined) {
+				toJoin.push(joinChannels[i]);
+			}
+		}
+		if (toJoin.length > 0) {
+			// console.log('dbg: join channels', toJoin.join());
+			socket.emit("input", {
+				target: id, // our current channel id
+				text: "/join " + toJoin.join()
+			});
+		}
+	}
+
+	// Autoconnect - quit handling - quit all channels aside from the last specified one in 'join' (active channel will be quit if joining new channel)
+	// TODO - For smoother quit, could refuse to insert channels in renderNetworks()
+	if (featureAutoconnect && id > 0 && params.hasOwnProperty('quit')) {
+		var didQuit = false;
+		$(target).parent(".network").find(".channel").each(function () {
+			if ($(this).data('title') != joinChannels[joinChannels.length-1]) {
+				// console.log('dbg: quit ', $(this).data('title'));
+				$(this).find('button.close').trigger("click");
+				didQuit = true;
+			}
+		});
+		if (didQuit) {
+			// console.log('dbg: returning');
+			return; // prevent core from clicking a channel we just closed below or connecting
+		}
+	}
+
+	// console.log('dbg: core: clicking active channel: ', sidebar.find("[data-id='" + id + "']").data('title'));
+
+	// CORE: 
 	target.trigger("click", {
 		replaceHistory: true
 	});
