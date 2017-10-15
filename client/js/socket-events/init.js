@@ -45,13 +45,11 @@ socket.on("init", function(data) {
 	$("#sign-in").remove();
 	$("body").removeClass("loading");
 
-	// Autoconnect - join handling - switch to already connected channel if join changed (last channel in join)
-	// NOTE: Single network compatible only. Sees Network for the last active channel only.
+	// Autoconnect - init
+	// NOTE: Single network compatible only. Sees Network of the last active channel only.
 	var id = data.active;
 	var target = sidebar.find("[data-id='" + id + "']");
-	// console.log('dbg: active id: ', id);
-	// console.log('dbg: active channel: ', $(target).data("title"));
-
+	// console.log('dbg: active channel(' + id + '): ', $(target).data("title"));
 	var joinChannels = featureAutoconnect && params.hasOwnProperty('join') ? params['join'].split(',') : [];
 	var channels = [];
 	if (featureAutoconnect && id > 0) {
@@ -60,7 +58,7 @@ socket.on("init", function(data) {
 		});
 	}
 	
-	// Autoconnect - show a different (already joined) channel
+	// Autoconnect - switch to a different (already joined) channel
 	if (featureAutoconnect && id > 0 && joinChannels.length > 0 && joinChannels[joinChannels.length-1] != $(target).data("title")) { // do nothing if desired channel already active, core will click it below
 		for (var i = channels.length - 1; i >= 0; i--) {
 			if (channels[i].title == joinChannels[joinChannels.length-1]) {
@@ -112,8 +110,8 @@ socket.on("init", function(data) {
 	}
 
 	// console.log('dbg: core: clicking active channel: ', sidebar.find("[data-id='" + id + "']").data('title'));
-
 	// CORE: 
+
 	target.trigger("click", {
 		replaceHistory: true
 	});
