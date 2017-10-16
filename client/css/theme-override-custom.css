@@ -33,9 +33,7 @@
  transition: none;
 }
 
-/* Assume small display size, hide left menu will be hidden */
-/*
+/* Assume small display size, left menu will be hidden on load */
 .loading #main {
   left: 5px;
 }
-*/
