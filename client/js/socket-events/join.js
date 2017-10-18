@@ -34,16 +34,18 @@ socket.on("join", function(data) {
 	// Old/existing tab - do not switch channels, focus is locked on existing channel from url param
 	// NOTE: Tried to implement with custom param to input event with '/join' (from autoconnect code), but too hard to pass source of join through server and back to client. 
 	// NOTE: Join event does not happen for new users, or new user page reloads, when /connect runs or has run and join param is the same
+	// TODO - If you are viewing a lobby, allow switching.
+	// TODO - Seems to fail on multiple clients loading at once (3 iframes on page)
 	var params = URI(document.location.search);
 	params = params.search(true);
-	var featureFocusLock = params.hasOwnProperty('focuslock');
+	var featureLockChannel = params.hasOwnProperty('lockchannel');
 	var joinChannelPerUrl = '';
-	if (featureFocusLock && params.hasOwnProperty('join')) {
+	if (featureLockChannel && params.hasOwnProperty('join')) {
 		var joinChannels = params['join'].length > 0 ? params['join'].split(',') : [];
 		joinChannelPerUrl = joinChannels[joinChannels.length - 1];
 	}
 	
-	if (featureFocusLock && joinChannelPerUrl.length > 0 && data.chan.type === "channel"  && data.chan.name != joinChannelPerUrl) {
+	if (featureLockChannel && joinChannelPerUrl.length > 0 && data.chan.type === "channel"  && data.chan.name != joinChannelPerUrl) {
 		// console.log('dbg: socket join: focus locking, prefer ' + joinChannelPerUrl + ', prevent UI switch to ', data.chan.name);
 		return;
 	}

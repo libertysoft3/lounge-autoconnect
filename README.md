@@ -24,10 +24,13 @@ Url params
 	* join: connect to one or more channels. (as per core, the last channel specified will have it's chat shown to the user). e.g. `&join=#channelA,#channelB`
 	* quit: quit any connected channels aside from the last channel specified in 'join'
 	* NOTE: All of the "Connect" form fields can be passed via url parameters: name, host, port, password, tls, nick, username, realname, and join.
-* focuslock:
-	* designed for multiple tabs/embeds with different `join` channels specified, so that channel focus isn't stolen for subsequent joins
+* lockchannel:
+	* designed for multiple tabs/embeds with different `join` channels specified, so that channel focus/active/shown channel isn't stolen for subsequent joins
 	* core: on any join, show that channel's chat
-	* with `focuslock` present your active room is locked down to the room specified in your url
+	* with `lockchannel` present your active room is locked down to the room specified in your url
 	* when any client joins a channel, refuse to show the channel's room (unless it is the last channel specified in 'join', so that autoconnect still works)
+* nofocus
+	* on page load, if already connected, do not focus on the message input field
+	* useful for iframes/embedded clients, to prevent chat input from taking focus
 
 More on [public vs. private mode](https://thelounge.github.io/docs/server/users.html)

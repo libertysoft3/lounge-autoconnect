@@ -31,7 +31,7 @@ $(function() {
 	var featureAutoconnect = false;
 	var acParams = URI(document.location.search);
 	acParams = acParams.search(true);
-	if (acParams.hasOwnProperty('autoconnect') && acParams['autoconnect'] === 'true') {
+	if (acParams.hasOwnProperty('autoconnect')) {
 		featureAutoconnect = true;
 	}
 
@@ -312,8 +312,14 @@ $(function() {
 	var focus = $.noop;
 	if (!("ontouchstart" in window || navigator.maxTouchPoints > 0)) {
 		focus = function() {
-			if (chat.find(".active").hasClass("chan")) {
-				input.focus();
+
+			// Autoconnect - disable chat input focus for embedded clients (iframe can scroll parent page)
+			if (featureAutoconnect && acParams.hasOwnProperty('nofocus')) {
+				// console.log('dbg: nofocus prevented focus');
+			} else {
+				if (chat.find(".active").hasClass("chan")) {
+					input.focus();
+				}
 			}
 		};
 
