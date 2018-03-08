@@ -9,24 +9,25 @@ const tz = require("./libs/handlebars/tz");
 const windows = $("#windows");
 const chat = $("#chat");
 
+// CUSTOM: change defaults
 const options = $.extend({
 	coloredNicks: true,
 	desktopNotifications: false,
-	join: true,
+	join: false,
 	links: true,
 	mode: true,
 	motd: true,
-	nick: true,
+	nick: false,
 	notification: true,
 	notifyAllMessages: false,
-	part: true,
-	quit: true,
+	part: false,
+	quit: false,
 	showSeconds: false,
 	theme: $("#theme").attr("href").replace(/^themes\/(.*).css$/, "$1"), // Extracts default theme name, set on the server configuration
 	thumbnails: true,
 	userStyles: userStyles.text(),
 	highlights: [],
-	autocomplete: true
+	autocomplete: false
 }, JSON.parse(storage.get("settings")));
 
 module.exports = options;
