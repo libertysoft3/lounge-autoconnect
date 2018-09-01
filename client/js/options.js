@@ -27,7 +27,7 @@ const options = $.extend({
 	thumbnails: true,
 	userStyles: userStyles.text(),
 	highlights: [],
-	autocomplete: false
+	autocomplete: true
 }, JSON.parse(storage.get("settings")));
 
 module.exports = options;
