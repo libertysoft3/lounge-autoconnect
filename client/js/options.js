@@ -161,3 +161,14 @@ if (("Notification" in window)) {
 	desktopNotificationsCheckbox.attr("disabled", true);
 	desktopNotificationsCheckbox.attr("checked", false);
 }
+
+// allow theme to be toggled from saidit
+const themeSelect = document.getElementById("theme-select");
+window.addEventListener("message", e=>{
+	// TODO: Read URL and theme names from config
+	if (e.origin !== "https://saidit.net") return;  // unsafe data; is secretly a virus!
+	if (e.data.type !== "saidit_theme") return;  // this event handler doesn't handle other messages
+
+	themeSelect.value = e.data.light ? "example" : "zenburn";
+	themeSelect.dispatchEvent(new Event('change', {bubbles: true}));  // triggers theme change and storage update
+}, false);
