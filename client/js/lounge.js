@@ -1024,7 +1024,7 @@ $(function() {
 	// Only start opening socket.io connection after all events have been registered
 	socket.open();
 
-	// Auto connect - public mode only, private mode must auth first
+	// CUSTOM: Auto connect - public mode only, private mode must auth first
 	if ($("body").hasClass("public") && featureAutoconnect) {
 		autoConnect(acParams);
 	}
@@ -1042,4 +1042,22 @@ $(function() {
 			});
 		}
 	});
+
+	// CUSTOM: external theme change
+	window.addEventListener("message", (e) => {
+		if (e.data.type !== "set_theme") return;
+		var newTheme = e.data.message;
+		switch (newTheme) {
+			case 'dark':
+				newTheme = options.themeNameDark;
+				break;
+			case 'light':
+				newTheme = options.themeNameLight;
+				break;
+		}
+		const themeSelect = document.getElementById("theme-select");
+		themeSelect.value = newTheme;
+		themeSelect.dispatchEvent(new Event('change', {bubbles: true}));  // theme change and storage update
+	});
+
 });

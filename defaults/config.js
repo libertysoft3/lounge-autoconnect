@@ -55,6 +55,10 @@ module.exports = {
 	//
 	theme: "themes/example.css",
 
+	// CUSTOM: support set_theme switching to generic themes "dark" and "light"
+	themeNameDark: "zenburn",
+	themeNameLight: "example",
+
 	//
 	// Prefetch URLs
 	//

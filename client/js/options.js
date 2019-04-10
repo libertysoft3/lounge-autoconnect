@@ -9,7 +9,7 @@ const tz = require("./libs/handlebars/tz");
 const windows = $("#windows");
 const chat = $("#chat");
 
-// CUSTOM: change defaults
+// CUSTOM: change defaults, should match values in defaults/config.js
 const options = $.extend({
 	coloredNicks: true,
 	desktopNotifications: false,
@@ -27,7 +27,10 @@ const options = $.extend({
 	thumbnails: true,
 	userStyles: userStyles.text(),
 	highlights: [],
-	autocomplete: true
+	autocomplete: true,
+	// CUSTOM
+	themeNameDark: 'zenburn',
+	themeNameLight: 'example'
 }, JSON.parse(storage.get("settings")));
 
 module.exports = options;
