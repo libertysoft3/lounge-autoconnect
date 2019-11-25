@@ -294,3 +294,10 @@ body {
         left: 1px;
     }
 }
+
+#main,
+#chat .sidebar,
+#windows .chan,
+#windows .window {
+	background: #383838;
+}
