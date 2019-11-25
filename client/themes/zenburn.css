@@ -284,3 +284,13 @@ body {
 		background: linear-gradient(to right, rgba(63, 63, 63, .5) 0%, rgba(63, 63, 63, 1) 100%);
 	}
 }
+
+/* SAIDIT */
+@media (max-width: 768px) {
+    #main {
+        top: 1px;
+        right: 1px;
+        bottom: 1px;
+        left: 1px;
+    }
+}
