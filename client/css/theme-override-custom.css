@@ -1,0 +1,39 @@
+/* Autoconnect: less loading flash */
+ #loading-page-message {
+   display: none;
+ }
+ .signed-out #main {
+   left: 220px;
+ }
+.loading #sidebar .empty {
+   display: none;
+ }
+.loading #footer button.icon {
+  display: none;
+}
+#windows .window:before {
+  display: none;
+}
+#sidebar .chan, #sidebar .chan-placeholder {
+ transition: none;
+}
+#sidebar .close {
+ transition: none;
+}
+#viewport {
+ transition: none;
+ -webkit-transform none;
+ -webkit-transform: none;
+ transform: none;
+}
+#image-viewer {
+ transition: none;
+}
+#footer .icon {
+ transition: none;
+}
+
+/* Assume small display size, left menu will be hidden on load */
+.loading #main {
+  left: 5px;
+}

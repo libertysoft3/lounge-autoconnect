@@ -1,70 +1,36 @@
-# The Lounge
+Fork of [The Lounge](https://github.com/thelounge/lounge) web IRC client, adding an auto connect feature with an auto login feature for private mode. Lounge version [v2.4.0](https://github.com/thelounge/lounge/releases/tag/v2.4.0) is supported.
 
-[![#thelounge IRC channel on freenode](https://img.shields.io/badge/freenode-%23thelounge-BA68C8.svg)](https://demo.thelounge.chat/)
-[![npm version](https://img.shields.io/npm/v/thelounge.svg)](https://www.npmjs.org/package/thelounge)
-[![Travis CI Build Status](https://img.shields.io/travis/thelounge/lounge/master.svg?label=linux+build)](https://travis-ci.org/thelounge/lounge)
-[![AppVeyor Build Status](https://img.shields.io/appveyor/ci/astorije/lounge/master.svg?label=windows+build)](https://ci.appveyor.com/project/astorije/lounge/branch/master)
-[![Dependencies Status](https://img.shields.io/david/thelounge/lounge.svg)](https://david-dm.org/thelounge/lounge)
+    git clone https://github.com/libertysoft3/lounge-autoconnect.git
+    cd lounge-autoconnect
+    git checkout v2.4.0-autoconnect
+    npm install
+    NODE_ENV=production npm run build
 
-The Lounge is a modern web IRC client designed for self-hosting.
+    # Optional, creates config file, change default IRC server, etc:
+    node index config
 
-To learn more about configuration, usage and features of The Lounge, take a look at [the website](https://thelounge.github.io).
+    npm start
 
-<p align="center">
-	<img src="https://user-images.githubusercontent.com/8675906/28143204-53116e8c-6719-11e7-992b-d1ba442c6c37.png" width="550">
-</p>
+* Public mode auto connect: `http://localhost:9000/?tls=true&autoconnect&nick=lounger&username=lounger&realname=lounger&join=%23thelounge-spam`
+* Private mode auto login and connect: `http://localhost:9000/?tls=true&autologin&user=lounger&al-password=lounger&autoconnect&nick=lounger&username=lounger&realname=lounger&join=%23thelounge-spam`
+* Private guest mode: `http://localhost:9000/?tls=true&autologin&user=guest&autoconnect&nick=lounger&username=lounger&realname=lounger&join=%23thelounge-spam`
 
-The Lounge is the official and community-managed fork of [Shout](https://github.com/erming/shout), by [Mattias Erming](https://github.com/erming).
 
-## Installation and usage
+Url params
+----------------
+* autologin: sign into or create a The Lounge private mode user account. Requires params user and al-password. (private mode only)
+	* al-password: warning this is a cleartext url parameter
+* autoconnect: automatically join the channels specified. Requires params nick, username, and realname (public or private modes)
+	* join: connect to one or more channels. (as per core, the last channel specified will have it's chat shown to the user). e.g. `&join=#channelA,#channelB`
+	* quit: quit any connected channels aside from the last channel specified in 'join'
+	* NOTE: All of the "Connect" form fields can be passed via url parameters: name, host, port, password, tls, nick, username, realname, and join.
+* lockchannel:
+	* designed for multiple tabs/embeds with different `join` channels specified, so that channel focus/active/shown channel isn't stolen for subsequent joins
+	* core: on any join, show that channel's chat
+	* with `lockchannel` present your active room is locked down to the room specified in your url
+	* when any client joins a channel, refuse to show the channel's room (unless it is the last channel specified in 'join', so that autoconnect still works)
+* nofocus
+	* on page load, if already connected, do not focus on the message input field
+	* useful for iframes/embedded clients, to prevent chat input from taking focus
 
-The Lounge requires [Node.js](https://nodejs.org/) v4 or more recent.
-
-### Running stable releases from npm (recommended)
-
-Run this in a terminal to install (or upgrade) the latest stable release from
-[npm](https://www.npmjs.com/):
-
-```sh
-[sudo] npm install -g thelounge
-```
-
-When installation is complete, run:
-
-```sh
-lounge start
-```
-
-For more information, read the [documentation](https://thelounge.github.io/docs/), [wiki](https://github.com/thelounge/lounge/wiki), or run:
-
-```sh
-lounge --help
-```
-
-### Running from source
-
-The following commands install and run the development version of The Lounge:
-
-```sh
-git clone https://github.com/thelounge/lounge.git
-cd lounge
-npm install
-NODE_ENV=production npm run build
-npm start
-```
-
-When installed like this, npm doesn't create a `lounge` executable. Use `npm start -- <command>` to run subcommands.
-
-⚠️ While it is the most recent codebase, this is not production-ready! Run at
-your own risk. It is also not recommended to run this as root.
-
-## Development setup
-
-Simply follow the instructions to run The Lounge from source above, on your own
-fork.
-
-Before submitting any change, make sure to:
-
-- Read the [Contributing instructions](https://github.com/thelounge/lounge/blob/master/CONTRIBUTING.md#contributing)
-- Run `npm test` to execute linters and test suite
-- Run `npm run build` if you change or add anything in `client/js` or `client/views`
+More on [public vs. private mode](https://thelounge.github.io/docs/server/users.html)

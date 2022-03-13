@@ -301,10 +301,18 @@ function init(socket, client) {
 		});
 
 		socket.join(client.id);
+
+		// Autologin triggering autoconnect
+		var autoLoginSuccess = false;
+		if (!Helper.config.public && client.config.isAutologin) {
+			autoLoginSuccess = true;
+		}
+
 		socket.emit("init", {
 			active: client.lastActiveChannel,
 			networks: client.networks,
-			token: client.config.token || null
+			token: client.config.token || null,
+			autoLoginSuccess: autoLoginSuccess
 		});
 	}
 }
@@ -391,7 +399,26 @@ function auth(data) {
 			init(socket, client);
 		}
 	} else {
+
+		// Autologin
+		if (data.isAutologin && !data.token && data.user && data.user == 'guest') {
+			data.user = 'guest-' + makeId(16);
+			data.password = makeId(16);
+			client = manager.findClient(data.user);
+			if (client) {
+				data.user = 'guest-' + makeId(16);
+			}
+		}
+
 		client = manager.findClient(data.user, data.token);
+
+		// Autologin
+		if (data.isAutologin && !client) { // Note: client sent isAutologin from client/js/socket-events/auth.js
+			manager.addUser(data.user, Helper.password.hash(data.password), false, true); // last param is autologin flag
+			manager.loadUser(data.user); // loads user config file and constructs a Client
+			client = manager.findClient(data.user);
+		}
+
 		var signedIn = data.token && client && data.token === client.config.token;
 		var token;
 
@@ -422,4 +449,18 @@ function auth(data) {
 			authFunction(client, data.user, data.password, authCallback);
 		}
 	}
+}
+
+// Ref: https://stackoverflow.com/a/1349426/1525014
+function makeId(len) {
+	var text = "";
+	var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+	if (!len) {
+		len = 1;
+	}
+	for (var i = 0; i < len; i++)
+		text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+	return text;
 }

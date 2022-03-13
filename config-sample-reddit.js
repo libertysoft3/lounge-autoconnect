@@ -10,7 +10,8 @@ module.exports = {
 	// @type     boolean
 	// @default  true
 	//
-	public: true,
+	// Set to false to enable user login.
+	public: false,
 
 	//
 	// IP address or hostname for the web server to listen on.
@@ -27,7 +28,8 @@ module.exports = {
 	// @type     int
 	// @default  9000
 	//
-	port: 9000,
+	// CUSTOM
+	port: 8090,
 
 	//
 	// Set the local IP to bind to for outgoing connections. Leave to undefined
@@ -54,10 +56,6 @@ module.exports = {
 	// @default  "themes/example.css"
 	//
 	theme: "themes/example.css",
-
-	// CUSTOM: support set_theme switching to generic themes "dark" and "light"
-	themeNameDark: "zenburn",
-	themeNameLight: "example",
 
 	//
 	// Prefetch URLs
@@ -200,7 +198,7 @@ module.exports = {
 		// @type     string
 		// @default  "Freenode"
 		//
-		name: "Freenode",
+		name: "Foonetic",
 
 		//
 		// Host
@@ -208,7 +206,7 @@ module.exports = {
 		// @type     string
 		// @default  "chat.freenode.net"
 		//
-		host: "chat.freenode.net",
+		host: "irc.foonetic.net",
 
 		//
 		// Port
@@ -240,7 +238,7 @@ module.exports = {
 		// @type     string
 		// @default  "lounge-user"
 		//
-		nick: "lounge-user",
+		nick: "guest",
 
 		//
 		// Username
@@ -248,7 +246,7 @@ module.exports = {
 		// @type     string
 		// @default  "lounge-user"
 		//
-		username: "lounge-user",
+		username: "guest",
 
 		//
 		// Real Name
@@ -256,7 +254,7 @@ module.exports = {
 		// @type     string
 		// @default  "The Lounge User"
 		//
-		realname: "The Lounge User",
+		realname: "Guest",
 
 		//
 		// Channels
@@ -265,7 +263,7 @@ module.exports = {
 		// @type     string
 		// @default  "#thelounge"
 		//
-		join: "#thelounge"
+		join: "#thelounge-spam"
 	},
 
 	//
@@ -290,7 +288,8 @@ module.exports = {
 		// @type     boolean
 		// @default  false
 		//
-		enable: false,
+		// CUSTOM
+		enable: true,
 
 		//
 		// Path to the key.
@@ -299,7 +298,8 @@ module.exports = {
 		// @example  "sslcert/key.pem"
 		// @default  ""
 		//
-		key: "",
+		// CUSTOM
+		key: "/etc/ssl/private/ssl-cert-snakeoil.key",
 
 		//
 		// Path to the certificate.
@@ -308,7 +308,8 @@ module.exports = {
 		// @example  "sslcert/key-cert.pem"
 		// @default  ""
 		//
-		certificate: "",
+		// CUSTOM
+		certificate: "/etc/ssl/certs/ssl-cert-snakeoil.pem",
 
 		//
 		// Path to the CA bundle.

@@ -10,22 +10,23 @@
 	<link rel="stylesheet" href="css/bootstrap.css">
 	<link rel="stylesheet" href="css/style.css">
 	<link id="theme" rel="stylesheet" href="{{ theme }}">
+	<link rel="stylesheet" href="css/theme-override-custom.css">
 	<style id="user-specified-css"></style>
 
 	<title>The Lounge</title>
 
 	<link rel="shortcut icon" href="img/favicon.png" data-other="img/favicon-notification.png" data-toggled="false" id="favicon">
 	<link rel="apple-touch-icon" sizes="120x120" href="img/apple-touch-icon-120x120.png">
-	<link rel="mask-icon" href="img/logo.svg" color="#455164">
+	<link rel="mask-icon" href="img/logo.svg" color="#f8f8f8">
 	<link rel="manifest" href="manifest.json">
 
 	<meta name="apple-mobile-web-app-capable" content="yes">
 	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 	<meta name="mobile-web-app-capable" content="yes">
-	<meta name="theme-color" content="#455164">
+	<meta name="theme-color" content="#f8f8f8">
 
 	</head>
-	<body class="signed-out {{#if public}}public{{/if}}" data-transports="{{tojson transports}}">
+	<body class="loading signed-out {{#if public}}public{{/if}}" data-transports="{{tojson transports}}">
 
 	<div id="wrap">
 	<div id="viewport">
@@ -44,7 +45,7 @@
 		</footer>
 		<div id="main">
 			<div id="windows">
-				<div id="loading" class="window active">
+				<div id="loading" class="window">
 					<div class="container">
 						<div class="row">
 							<div class="col-xs-12">
@@ -61,7 +62,7 @@
 						</div>
 					</div>
 				</div>
-				<div id="chat-container" class="window">
+				<div id="chat-container" class="window active">
 					<div id="chat"></div>
 					<button id="connection-error" class="btn btn-reconnect">Client connection lost &mdash; Click here to reconnect</button>
 					<form id="form" method="post" action="">

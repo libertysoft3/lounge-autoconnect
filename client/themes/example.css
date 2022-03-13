@@ -68,3 +68,51 @@ body {
 		left: 5px;
 	}
 }
+
+/* SAIDIT CUSTOM UPDATES */
+
+#main {
+	bottom: 2px;
+	right: 2px;
+	top: 2px;
+	left: 2px;
+}
+
+body {
+	background-color: #f8f8f8;
+}
+
+
+@media (max-width: 768px) {
+	#main {
+		left: 2px;
+	}
+}
+
+#windows #chat-container.active {
+	border: solid #f8f8f8;
+    border-radius: 12px;
+}
+
+#chat .time{
+	color: #757575;
+}
+
+@media (min-width: 480px) {
+	#chat .from:after {
+		background: none;
+	}
+}
+
+#sidebar .chan .name:after {
+	background: none;
+}
+
+#sidebar .chan:first-child:hover, #sidebar .chan:first-child.acive { 
+	color: #74b778;
+ }
+
+#sidebar button:hover, #sidebar .chan:hover, #sidebar .active {
+
+	color: #484848;
+}

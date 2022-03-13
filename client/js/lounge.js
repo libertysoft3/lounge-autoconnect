@@ -27,6 +27,14 @@ $(function() {
 	var sidebar = $("#sidebar, #footer");
 	var chat = $("#chat");
 
+	// Autoconnect
+	var featureAutoconnect = false;
+	var acParams = URI(document.location.search);
+	acParams = acParams.search(true);
+	if (acParams.hasOwnProperty('autoconnect')) {
+		featureAutoconnect = true;
+	}
+
 	$(document.body).data("app-name", document.title);
 
 	var pop;
@@ -304,8 +312,14 @@ $(function() {
 	var focus = $.noop;
 	if (!("ontouchstart" in window || navigator.maxTouchPoints > 0)) {
 		focus = function() {
-			if (chat.find(".active").hasClass("chan")) {
-				input.focus();
+
+			// Autoconnect - disable chat input focus for embedded clients (iframe can scroll parent page)
+			if (featureAutoconnect && acParams.hasOwnProperty('nofocus')) {
+				// console.log('dbg: nofocus prevented focus');
+			} else {
+				if (chat.find(".active").hasClass("chan")) {
+					input.focus();
+				}
 			}
 		};
 
@@ -539,7 +553,7 @@ $(function() {
 
 		var placeholder = "";
 		if (chan.data("type") === "channel" || chan.data("type") === "query") {
-			placeholder = `Write to ${chan.data("title")}`;
+			placeholder = `Chat in ${chan.data("title")}`;
 		}
 		input.attr("placeholder", placeholder);
 
@@ -722,7 +736,7 @@ $(function() {
 			}
 		});
 	});
-	if ($("body").hasClass("public")) {
+	if (featureAutoconnect || $("body").hasClass("public")) {
 		$("#connect").one("show", function() {
 			var params = URI(document.location.search);
 			params = params.search(true);
@@ -985,8 +999,35 @@ $(function() {
 	}
 	setTimeout(updateDateMarkers, msUntilNextDay());
 
+ // Called for public mode only, private mode does it in init.js
+ // E.g. specifying join for multiple channels: &join=%23channelOne%2c%23channelTwo
+	function autoConnect(urlParams) {
+ 		var whitelist = ['name', 'host', 'port', 'password', 'tls', 'nick', 'username', 'realname', 'join'];
+ 		var connectParams = {};
+	 	$.each($('#connect form').serializeArray(), function(i, obj) {
+	 		if (obj.value !== '' && whitelist.indexOf(obj.name) !== -1) {
+	 			connectParams[obj.name] = obj.value;
+	 		}
+	 	});
+
+	 	// Override default config with any url params
+		for (var i = 0; i < whitelist.length; i++) {
+			var key = whitelist[i];
+			if (urlParams.hasOwnProperty(key) && urlParams.indexOf(key) !== -1) {
+				key = key.replace(/\W/g, ""); // \W searches for non-word characters
+				connectParams[key] = urlParams[key];
+			}
+		}
+		socket.emit("conn", connectParams);
+	}
+
 	// Only start opening socket.io connection after all events have been registered
 	socket.open();
+
+	// CUSTOM: Auto connect - public mode only, private mode must auth first
+	if ($("body").hasClass("public") && featureAutoconnect) {
+		autoConnect(acParams);
+	}
 
 	window.addEventListener("popstate", (e) => {
 		const {state} = e;
@@ -1001,4 +1042,22 @@ $(function() {
 			});
 		}
 	});
+
+	// CUSTOM: external theme change
+	window.addEventListener("message", (e) => {
+		if (e.data.type !== "set_theme") return;
+		var newTheme = e.data.message;
+		switch (newTheme) {
+			case 'dark':
+				newTheme = options.themeNameDark;
+				break;
+			case 'light':
+				newTheme = options.themeNameLight;
+				break;
+		}
+		const themeSelect = document.getElementById("theme-select");
+		themeSelect.value = newTheme;
+		themeSelect.dispatchEvent(new Event('change', {bubbles: true}));  // theme change and storage update
+	});
+
 });
